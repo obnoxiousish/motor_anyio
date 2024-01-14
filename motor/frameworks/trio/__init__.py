@@ -48,14 +48,10 @@ def pymongo_class_wrapper(f, pymongo_class):
     return _wrapper
 
 def check_event_loop(loop):
-    if not isinstance(loop, trio._core._run._SyncIOThread):
-        raise RuntimeError(
-            "Motor requires a Trio event loop, not %r" % loop)
+    return None
 
 def get_event_loop(loop=None):
-    if loop is None:
-        loop = trio._core._run._SyncIOThread.current()
-    return loop
+    return None
 
 def platform_info():
     return "trio"
