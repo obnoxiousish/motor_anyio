@@ -26,7 +26,8 @@ else:
 trio.to_thread.current_default_thread_limiter.total_tokens = max_workers
 
 def run_on_executor(loop, function, *args, **kwargs):
-    return trio.to_thread.run_sync(function, *args, **kwargs)
+    partial_function = functools.partial(function, *args, **kwargs)
+    return trio.to_thread.run_sync(partial_function)
 
 def pymongo_class_wrapper(f, pymongo_class):
     """Executes the coroutine f and wraps its result in a Motor class.
