@@ -10,7 +10,7 @@ from .frameworks import trio as trio_framework
 from .metaprogramming import T, create_class_with_framework
 
 __all__ = [
-    "TrioMotorClient",
+    "AnyIOMotorClient",
     "TrioMotorClientSession",
     "TrioMotorDatabase",
     "TrioMotorCollection",
@@ -31,7 +31,7 @@ def create_trio_class(cls: T) -> T:
     )
 
 
-TrioMotorClient = create_trio_class(core.AgnosticClient)
+AnyIOMotorClient = create_trio_class(core.AgnosticClient)
 
 
 TrioMotorClientSession = create_trio_class(core.AgnosticClientSession)
