@@ -1,4 +1,4 @@
-# Author: obnoxious, fuck mongodb for not implementing AnyIO and making me do this
+# Author: obnoxious, fuck mongodb for not implementing Trio and making me do this
 # I fucking hate you.
 
 # Seriously, like a lot.
@@ -10,7 +10,7 @@ from .frameworks import trio as trio_framework
 from .metaprogramming import T, create_class_with_framework
 
 __all__ = [
-    "AnyIOMotorClient",
+    "TrioMotorClient",
     "TrioMotorClientSession",
     "TrioMotorDatabase",
     "TrioMotorCollection",
@@ -31,7 +31,7 @@ def create_trio_class(cls: T) -> T:
     )
 
 
-AnyIOMotorClient = create_trio_class(core.AgnosticClient)
+TrioMotorClient = create_trio_class(core.AgnosticClient)
 
 
 TrioMotorClientSession = create_trio_class(core.AgnosticClientSession)
