@@ -2,7 +2,7 @@ import asyncio
 
 from bson.raw_bson import RawBSONDocument
 
-from motorAnyio.core import AgnosticClient
+from motor.core import AgnosticClient
 
 
 async def _main():

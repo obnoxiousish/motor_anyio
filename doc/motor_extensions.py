@@ -21,8 +21,8 @@ from sphinx import addnodes
 from sphinx.addnodes import desc, desc_content, desc_signature, seealso, versionmodified
 from sphinx.util.inspect import safe_getattr
 
-import motorAnyio
-import motorAnyio.core
+import motor
+import motor.core
 
 # This is a place to store info while parsing, to be used before generating.
 motor_info = {}
@@ -173,7 +173,7 @@ def build_finished(app, exception):
 
 
 def setup(app):
-    app.add_autodoc_attrgetter(type(motorAnyio.core.AgnosticBase), get_motor_attr)
+    app.add_autodoc_attrgetter(type(motor.core.AgnosticBase), get_motor_attr)
     app.connect("autodoc-process-docstring", process_motor_docstring)
     app.connect("doctree-read", process_motor_nodes)
     app.connect("build-finished", build_finished)

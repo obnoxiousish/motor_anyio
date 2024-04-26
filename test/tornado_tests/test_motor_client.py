@@ -32,7 +32,7 @@ from pymongo.errors import ConnectionFailure, OperationFailure
 from tornado import gen
 from tornado.testing import gen_test
 
-import motorAnyio
+import motor
 
 
 class MotorClientTest(MotorTest):
@@ -70,7 +70,7 @@ class MotorClientTest(MotorTest):
         await client.motor_test.test.insert_one({"dummy": "object"})
 
         # Confirm it fails with a missing socket.
-        client = motorAnyio.MotorClient(
+        client = motor.MotorClient(
             "mongodb://%2Ftmp%2Fnon-existent.sock",
             io_loop=self.io_loop,
             serverSelectionTimeoutMS=100,
@@ -81,16 +81,16 @@ class MotorClientTest(MotorTest):
 
     def test_io_loop(self):
         with self.assertRaises(TypeError):
-            motorAnyio.MotorClient(test.env.uri, io_loop="foo")
+            motor.MotorClient(test.env.uri, io_loop="foo")
 
     def test_database_named_delegate(self):
         self.assertTrue(isinstance(self.cx.delegate, pymongo.mongo_client.MongoClient))
-        self.assertTrue(isinstance(self.cx["delegate"], motorAnyio.MotorDatabase))
+        self.assertTrue(isinstance(self.cx["delegate"], motor.MotorDatabase))
 
     @gen_test
     async def test_connection_failure(self):
         # Assuming there isn't anything actually running on this port
-        client = motorAnyio.MotorClient(
+        client = motor.MotorClient(
             "localhost", 8765, io_loop=self.io_loop, serverSelectionTimeoutMS=10
         )
 
@@ -102,7 +102,7 @@ class MotorClientTest(MotorTest):
         # Motor merely tries to time out a connection attempt within the
         # specified duration; DNS lookup in particular isn't charged against
         # the timeout. So don't measure how long this takes.
-        client = motorAnyio.MotorClient(
+        client = motor.MotorClient(
             "example.com", port=12345, serverSelectionTimeoutMS=1, io_loop=self.io_loop
         )
 
@@ -111,10 +111,10 @@ class MotorClientTest(MotorTest):
 
     def test_max_pool_size_validation(self):
         with self.assertRaises(ValueError):
-            motorAnyio.MotorClient(maxPoolSize=-1)
+            motor.MotorClient(maxPoolSize=-1)
 
         with self.assertRaises(ValueError):
-            motorAnyio.MotorClient(maxPoolSize="foo")
+            motor.MotorClient(maxPoolSize="foo")
 
         cx = self.motor_client(maxPoolSize=100)
         self.assertEqual(cx.options.pool_options.max_pool_size, 100)
@@ -160,7 +160,7 @@ class MotorClientTest(MotorTest):
         write_concern = WriteConcern(w=2, j=True)
         db = self.cx.get_database("foo", codec_options, ReadPreference.SECONDARY, write_concern)
 
-        self.assertTrue(isinstance(db, motorAnyio.MotorDatabase))
+        self.assertTrue(isinstance(db, motor.MotorDatabase))
         self.assertEqual("foo", db.name)
         self.assertEqual(codec_options, db.codec_options)
         self.assertEqual(ReadPreference.SECONDARY, db.read_preference)
@@ -170,7 +170,7 @@ class MotorClientTest(MotorTest):
     async def test_list_databases(self):
         await self.collection.insert_one({})
         cursor = await self.cx.list_databases()
-        self.assertIsInstance(cursor, motorAnyio.motor_tornado.MotorCommandCursor)
+        self.assertIsInstance(cursor, motor.motor_tornado.MotorCommandCursor)
 
         # Make sure the cursor works, by searching for "local" database.
         while await cursor.fetch_next:
@@ -192,7 +192,7 @@ class MotorClientTimeoutTest(MotorMockServerTest):
     @gen_test
     async def test_timeout(self):
         server = self.server(auto_ismaster=True)
-        client = motorAnyio.MotorClient(server.uri, socketTimeoutMS=100)
+        client = motor.MotorClient(server.uri, socketTimeoutMS=100)
 
         with self.assertRaises(pymongo.errors.AutoReconnect) as context:
             await client.motor_test.test_collection.find_one()
@@ -219,7 +219,7 @@ class MotorClientExhaustCursorTest(MotorMockServerTest):
         # When doing an exhaust query, the socket stays checked out on success
         # but must be checked in on error to avoid counter leak.
         server = self.primary_or_standalone(rs=rs)
-        client = motorAnyio.MotorClient(server.uri, maxPoolSize=1)
+        client = motor.MotorClient(server.uri, maxPoolSize=1)
         await client.admin.command("ismaster")
         pool = get_primary_pool(client)
         conn = one(pool.conns)
@@ -248,7 +248,7 @@ class MotorClientExhaustCursorTest(MotorMockServerTest):
         # When doing an exhaust query, the socket stays checked out on success
         # but must be checked in on error to avoid counter leak.
         server = self.primary_or_standalone(rs=rs)
-        client = motorAnyio.MotorClient(server.uri, maxPoolSize=1, retryReads=False)
+        client = motor.MotorClient(server.uri, maxPoolSize=1, retryReads=False)
 
         await client.admin.command("ismaster")
         pool = get_primary_pool(client)
@@ -284,7 +284,7 @@ class MotorClientHandshakeTest(MotorMockServerTest):
     @gen_test
     async def test_handshake(self):
         server = self.server()
-        client = motorAnyio.MotorClient(server.uri, connectTimeoutMS=100, serverSelectionTimeoutMS=100)
+        client = motor.MotorClient(server.uri, connectTimeoutMS=100, serverSelectionTimeoutMS=100)
 
         # Trigger connection.
         future = client.db.command("ping")
@@ -293,9 +293,9 @@ class MotorClientHandshakeTest(MotorMockServerTest):
         self.assertEqual("PyMongo|Motor", meta["driver"]["name"])
         self.assertIn("Tornado", meta["platform"])
         self.assertTrue(
-            meta["driver"]["version"].endswith(motorAnyio.version),
+            meta["driver"]["version"].endswith(motor.version),
             "Version in handshake [%s] doesn't end with Motor version [%s]"
-            % (meta["driver"]["version"], motorAnyio.version),
+            % (meta["driver"]["version"], motor.version),
         )
 
         ismaster.hangs_up()
@@ -310,7 +310,7 @@ class MotorClientHandshakeTest(MotorMockServerTest):
     async def test_driver_info(self):
         server = self.server()
         driver_info = DriverInfo(name="Foo", version="1.1.1", platform="FooPlat")
-        client = motorAnyio.MotorClient(server.uri, driver=driver_info)
+        client = motor.MotorClient(server.uri, driver=driver_info)
 
         # Trigger connection.
         future = client.db.command("ping")
@@ -320,9 +320,9 @@ class MotorClientHandshakeTest(MotorMockServerTest):
         self.assertIn("Tornado", meta["platform"])
         self.assertIn(f"|{driver_info.platform}", meta["platform"])
         self.assertTrue(
-            meta["driver"]["version"].endswith(f"{motorAnyio.version}|{driver_info.version}"),
+            meta["driver"]["version"].endswith(f"{motor.version}|{driver_info.version}"),
             "Version in handshake [%s] doesn't end with MotorVersion|Test version [%s]"
-            % (meta["driver"]["version"], f"{motorAnyio.version}|{driver_info.version}"),
+            % (meta["driver"]["version"], f"{motor.version}|{driver_info.version}"),
         )
 
         handshake.ok()
@@ -338,7 +338,7 @@ class MotorClientHandshakeTest(MotorMockServerTest):
             TypeError,
             msg="Allowed invalid type parameter str, driver should only be of DriverInfo",
         ):
-            motorAnyio.MotorClient(driver="string")
+            motor.MotorClient(driver="string")
 
 
 if __name__ == "__main__":

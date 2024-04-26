@@ -116,16 +116,16 @@ from pymongo.uri_parser import _HAVE_DNSPYTHON
 from pymongo.write_concern import *
 from tornado.ioloop import IOLoop
 
-import motorAnyio
-import motorAnyio.frameworks.tornado
-import motorAnyio.motor_tornado
+import motor
+import motor.frameworks.tornado
+import motor.motor_tornado
 
 # Internal classes not declared in motor_tornado.py: retrieve from class cache.
-from motorAnyio.core import AgnosticRawBatchCommandCursor as _AgnosticRawBatchCommandCursor
-from motorAnyio.core import AgnosticRawBatchCursor as _AgnosticRawBatchCursor
-from motorAnyio.core import _MotorTransactionContext
-from motorAnyio.metaprogramming import MotorAttributeFactory
-from motorAnyio.motor_tornado import create_motor_class
+from motor.core import AgnosticRawBatchCommandCursor as _AgnosticRawBatchCommandCursor
+from motor.core import AgnosticRawBatchCursor as _AgnosticRawBatchCursor
+from motor.core import _MotorTransactionContext
+from motor.metaprogramming import MotorAttributeFactory
+from motor.motor_tornado import create_motor_class
 
 _MotorRawBatchCursor = create_motor_class(_AgnosticRawBatchCursor)
 _MotorRawBatchCommandCursor = create_motor_class(_AgnosticRawBatchCommandCursor)
@@ -142,40 +142,40 @@ def wrap_synchro(fn):
 
         # Not all Motor classes appear here, only those we need to return
         # from methods like create_collection()
-        if isinstance(motor_obj, motorAnyio.MotorCollection):
+        if isinstance(motor_obj, motor.MotorCollection):
             client = MongoClient(delegate=motor_obj.database.client)
             database = Database(client, motor_obj.database.name)
             return Collection(database, motor_obj.name, delegate=motor_obj)
-        if isinstance(motor_obj, motorAnyio.motor_tornado.MotorClientSession):
+        if isinstance(motor_obj, motor.motor_tornado.MotorClientSession):
             return ClientSession(delegate=motor_obj)
         if isinstance(motor_obj, _MotorTransactionContext):
             return _SynchroTransactionContext(motor_obj)
-        if isinstance(motor_obj, motorAnyio.MotorDatabase):
+        if isinstance(motor_obj, motor.MotorDatabase):
             client = MongoClient(delegate=motor_obj.client)
             return Database(client, motor_obj.name, delegate=motor_obj)
-        if isinstance(motor_obj, motorAnyio.motor_tornado.MotorChangeStream):
+        if isinstance(motor_obj, motor.motor_tornado.MotorChangeStream):
             # Send the initial aggregate as PyMongo expects.
             motor_obj._lazy_init()
             return ChangeStream(motor_obj)
-        if isinstance(motor_obj, motorAnyio.motor_tornado.MotorLatentCommandCursor):
+        if isinstance(motor_obj, motor.motor_tornado.MotorLatentCommandCursor):
             synchro_cursor = CommandCursor(motor_obj)
             # Send the initial command as PyMongo expects.
             if not motor_obj.started:
                 synchro_cursor.synchronize(motor_obj._get_more)()
             return synchro_cursor
-        if isinstance(motor_obj, motorAnyio.motor_tornado.MotorCommandCursor):
+        if isinstance(motor_obj, motor.motor_tornado.MotorCommandCursor):
             return CommandCursor(motor_obj)
         if isinstance(motor_obj, _MotorRawBatchCommandCursor):
             return CommandCursor(motor_obj)
-        if isinstance(motor_obj, motorAnyio.motor_tornado.MotorCursor):
+        if isinstance(motor_obj, motor.motor_tornado.MotorCursor):
             return Cursor(motor_obj)
         if isinstance(motor_obj, _MotorRawBatchCursor):
             return Cursor(motor_obj)
-        if isinstance(motor_obj, motorAnyio.MotorGridIn):
+        if isinstance(motor_obj, motor.MotorGridIn):
             return GridIn(None, delegate=motor_obj)
-        if isinstance(motor_obj, motorAnyio.MotorGridOut):
+        if isinstance(motor_obj, motor.MotorGridOut):
             return GridOut(None, delegate=motor_obj)
-        if isinstance(motor_obj, motorAnyio.motor_tornado.MotorGridOutCursor):
+        if isinstance(motor_obj, motor.motor_tornado.MotorGridOutCursor):
             return GridOutCursor(motor_obj)
         else:
             return motor_obj
@@ -350,7 +350,7 @@ _T = TypeVar("_T")
 
 
 class MongoClient(Synchro, Generic[_T]):
-    __delegate_class__ = motorAnyio.MotorClient
+    __delegate_class__ = motor.MotorClient
     HOST = "localhost"
     PORT = 27017
 
@@ -422,7 +422,7 @@ class _SynchroTransactionContext(Synchro):
 
 
 class ClientSession(Synchro):
-    __delegate_class__ = motorAnyio.motor_tornado.MotorClientSession
+    __delegate_class__ = motor.motor_tornado.MotorClientSession
 
     start_transaction = WrapOutgoing()
     client = SynchroProperty()
@@ -449,7 +449,7 @@ class ClientSession(Synchro):
 
 
 class Database(Synchro):
-    __delegate_class__ = motorAnyio.MotorDatabase
+    __delegate_class__ = motor.MotorDatabase
 
     get_collection = WrapOutgoing()
     watch = WrapOutgoing()
@@ -462,9 +462,9 @@ class Database(Synchro):
         self._client = client
         self.delegate = kwargs.get("delegate")
         if self.delegate is None:
-            self.delegate = motorAnyio.MotorDatabase(client.delegate, name, **kwargs)
+            self.delegate = motor.MotorDatabase(client.delegate, name, **kwargs)
 
-        assert isinstance(self.delegate, motorAnyio.MotorDatabase), (
+        assert isinstance(self.delegate, motor.MotorDatabase), (
             "synchro.Database delegate must be MotorDatabase, not %s" % repr(self.delegate)
         )
 
@@ -487,7 +487,7 @@ class Database(Synchro):
 
 
 class Collection(Synchro):
-    __delegate_class__ = motorAnyio.MotorCollection
+    __delegate_class__ = motor.MotorCollection
 
     find = WrapOutgoing()
     find_raw_batches = WrapOutgoing()
@@ -508,9 +508,9 @@ class Collection(Synchro):
         self.database = database
         self.delegate = kwargs.get("delegate")
         if self.delegate is None:
-            self.delegate = motorAnyio.MotorCollection(self.database.delegate, name, **kwargs)
+            self.delegate = motor.MotorCollection(self.database.delegate, name, **kwargs)
 
-        if not isinstance(self.delegate, motorAnyio.MotorCollection):
+        if not isinstance(self.delegate, motor.MotorCollection):
             raise TypeError(
                 "Expected to get synchro Collection from Database got %s" % repr(self.delegate)
             )
@@ -527,7 +527,7 @@ class Collection(Synchro):
 
 
 class ChangeStream(Synchro):
-    __delegate_class__ = motorAnyio.motor_tornado.MotorChangeStream
+    __delegate_class__ = motor.motor_tornado.MotorChangeStream
 
     _next = Sync("next")
     try_next = Sync("try_next")
@@ -568,7 +568,7 @@ class ChangeStream(Synchro):
 
 
 class Cursor(Synchro):
-    __delegate_class__ = motorAnyio.motor_tornado.MotorCursor
+    __delegate_class__ = motor.motor_tornado.MotorCursor
 
     batch_size = WrapOutgoing()
     rewind = WrapOutgoing()
@@ -628,16 +628,16 @@ class Cursor(Synchro):
 
 
 class CommandCursor(Cursor):
-    __delegate_class__ = motorAnyio.motor_tornado.MotorCommandCursor
+    __delegate_class__ = motor.motor_tornado.MotorCommandCursor
 
     try_next = Sync("try_next")
 
 
 class GridOutCursor(Cursor):
-    __delegate_class__ = motorAnyio.motor_tornado.MotorGridOutCursor
+    __delegate_class__ = motor.motor_tornado.MotorGridOutCursor
 
     def __init__(self, delegate):
-        if not isinstance(delegate, motorAnyio.motor_tornado.MotorGridOutCursor):
+        if not isinstance(delegate, motor.motor_tornado.MotorGridOutCursor):
             raise TypeError("Expected MotorGridOutCursor, got %r" % delegate)
 
         super().__init__(delegate)
@@ -660,7 +660,7 @@ class BulkOperationBuilder:
 
 
 class GridFSBucket(Synchro):
-    __delegate_class__ = motorAnyio.MotorGridFSBucket
+    __delegate_class__ = motor.MotorGridFSBucket
 
     find = WrapOutgoing()
 
@@ -668,11 +668,11 @@ class GridFSBucket(Synchro):
         if not isinstance(database, Database):
             raise TypeError("Expected Database, got %s" % repr(database))
 
-        self.delegate = motorAnyio.MotorGridFSBucket(database.delegate, *args, **kwargs)
+        self.delegate = motor.MotorGridFSBucket(database.delegate, *args, **kwargs)
 
 
 class GridIn(Synchro):
-    __delegate_class__ = motorAnyio.MotorGridIn
+    __delegate_class__ = motor.MotorGridIn
     _chunk_number = SynchroProperty()
     _closed = SynchroProperty()
 
@@ -687,7 +687,7 @@ class GridIn(Synchro):
             if not isinstance(collection, Collection):
                 raise TypeError("Expected Collection, got %s" % repr(collection))
 
-            self.delegate = motorAnyio.MotorGridIn(collection.delegate, **kwargs)
+            self.delegate = motor.MotorGridIn(collection.delegate, **kwargs)
 
     def __getattr__(self, item):
         return getattr(self.delegate, item)
@@ -709,7 +709,7 @@ class SynchroGridOutProperty:
 
 
 class GridOut(Synchro):
-    __delegate_class__ = motorAnyio.MotorGridOut
+    __delegate_class__ = motor.MotorGridOut
 
     _id = SynchroGridOutProperty("_id")
     aliases = SynchroGridOutProperty("aliases")
@@ -734,7 +734,7 @@ class GridOut(Synchro):
             if not isinstance(root_collection, Collection):
                 raise TypeError("Expected Collection, got %s" % repr(root_collection))
 
-            self.delegate = motorAnyio.MotorGridOut(
+            self.delegate = motor.MotorGridOut(
                 root_collection.delegate, file_id, file_document, session=session
             )
 
@@ -787,7 +787,7 @@ class AutoEncryptionOpts(encryption_options.AutoEncryptionOpts):
 
 
 class ClientEncryption(Synchro):
-    __delegate_class__ = motorAnyio.MotorClientEncryption
+    __delegate_class__ = motor.MotorClientEncryption
 
     _enc_col = Sync("create_encrypted_collection")
     encrypt_expression = Sync("encrypt_expression")
@@ -800,7 +800,7 @@ class ClientEncryption(Synchro):
         codec_options,
         kms_tls_options=None,
     ):
-        self.delegate = motorAnyio.MotorClientEncryption(
+        self.delegate = motor.MotorClientEncryption(
             kms_providers,
             key_vault_namespace,
             key_vault_client.delegate,

@@ -28,7 +28,7 @@ from pymongo.read_preferences import Nearest, ReadPreference, Secondary
 from tornado.ioloop import IOLoop
 from tornado.testing import gen_test
 
-import motorAnyio
+import motor
 
 
 class MotorTestBasic(MotorTest):
@@ -80,7 +80,7 @@ class MotorTestBasic(MotorTest):
     @ignore_deprecations
     def test_read_preference(self):
         # Check the default
-        cx = motorAnyio.MotorClient(test.env.uri, io_loop=self.io_loop)
+        cx = motor.MotorClient(test.env.uri, io_loop=self.io_loop)
         self.assertEqual(ReadPreference.PRIMARY, cx.read_preference)
 
         # We can set mode, tags, and latency.
@@ -105,9 +105,9 @@ class MotorTestBasic(MotorTest):
         cx.close()
 
     def test_underscore(self):
-        self.assertIsInstance(self.cx["_db"], motorAnyio.MotorDatabase)
-        self.assertIsInstance(self.db["_collection"], motorAnyio.MotorCollection)
-        self.assertIsInstance(self.collection["_collection"], motorAnyio.MotorCollection)
+        self.assertIsInstance(self.cx["_db"], motor.MotorDatabase)
+        self.assertIsInstance(self.db["_collection"], motor.MotorCollection)
+        self.assertIsInstance(self.collection["_collection"], motor.MotorCollection)
 
         with self.assertRaises(AttributeError):
             self.cx._db
@@ -130,14 +130,14 @@ class MotorTestBasic(MotorTest):
 
     @gen_test
     async def test_inheritance(self):
-        class CollectionSubclass(motorAnyio.MotorCollection):
+        class CollectionSubclass(motor.MotorCollection):
             pass
 
-        class DatabaseSubclass(motorAnyio.MotorDatabase):
+        class DatabaseSubclass(motor.MotorDatabase):
             def __getitem__(self, name):
                 return CollectionSubclass(self, name)
 
-        class ClientSubclass(motorAnyio.MotorClient):
+        class ClientSubclass(motor.MotorClient):
             def __getitem__(self, name):
                 return DatabaseSubclass(self, name)
 

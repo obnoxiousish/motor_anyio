@@ -25,8 +25,8 @@ import mimetypes
 import aiohttp.web
 import gridfs
 
-from motorAnyio.motor_asyncio import AsyncIOMotorDatabase, AsyncIOMotorGridFSBucket
-from motorAnyio.motor_gridfs import _hash_gridout
+from motor.motor_asyncio import AsyncIOMotorDatabase, AsyncIOMotorGridFSBucket
+from motor.motor_gridfs import _hash_gridout
 
 # mypy: disable-error-code="no-untyped-def,no-untyped-call"
 

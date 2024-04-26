@@ -13,8 +13,8 @@ import tempfile
 
 import aiohttp.web
 
-from motorAnyio.aiohttp import AIOHTTPGridFS
-from motorAnyio.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorGridFSBucket
+from motor.aiohttp import AIOHTTPGridFS
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorGridFSBucket
 
 client = AsyncIOMotorClient()
 

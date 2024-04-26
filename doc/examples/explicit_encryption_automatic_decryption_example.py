@@ -4,7 +4,7 @@ import os
 from pymongo.encryption import Algorithm
 from pymongo.encryption_options import AutoEncryptionOpts
 
-from motorAnyio.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorClientEncryption
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorClientEncryption
 
 
 async def main():

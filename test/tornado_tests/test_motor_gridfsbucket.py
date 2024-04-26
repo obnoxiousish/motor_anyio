@@ -20,7 +20,7 @@ from test.tornado_tests import MotorTest
 from gridfs.errors import NoFile
 from tornado.testing import gen_test
 
-import motorAnyio
+import motor
 
 
 class MotorGridFSBucketTest(MotorTest):
@@ -33,7 +33,7 @@ class MotorGridFSBucketTest(MotorTest):
     def setUp(self):
         super().setUp()
         self.io_loop.run_sync(self._reset)
-        self.bucket = motorAnyio.MotorGridFSBucket(self.db)
+        self.bucket = motor.MotorGridFSBucket(self.db)
 
     def tearDown(self):
         self.io_loop.run_sync(self._reset)

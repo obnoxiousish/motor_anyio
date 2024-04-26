@@ -23,7 +23,7 @@ from test.test_environment import env
 import pymongo
 import pymongo.errors
 
-from motorAnyio import motor_asyncio
+from motor import motor_asyncio
 
 
 class TestAsyncIOReplicaSet(AsyncIOTestCase):

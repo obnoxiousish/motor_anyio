@@ -9,7 +9,7 @@ sys.path[0:0] = [os.path.abspath("..")]
 
 from pymongo import version as pymongo_version  # noqa: E402
 
-import motorAnyio  # noqa: E402
+import motor  # noqa: E402
 
 # -- General configuration -----------------------------------------------------
 
@@ -46,9 +46,9 @@ copyright = "2016-present MongoDB, Inc."
 # built documents.
 #
 # The short X.Y version.
-version = motorAnyio.version
+version = motor.version
 # The full version, including alpha/beta/rc tags.
-release = motorAnyio.version
+release = motor.version
 
 # List of documents that shouldn't be included in the build.
 unused_docs = []

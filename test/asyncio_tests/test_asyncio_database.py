@@ -25,7 +25,7 @@ from pymongo import ReadPreference, WriteConcern
 from pymongo.errors import CollectionInvalid, OperationFailure
 from pymongo.read_preferences import Secondary
 
-from motorAnyio.motor_asyncio import AsyncIOMotorCollection, AsyncIOMotorDatabase
+from motor.motor_asyncio import AsyncIOMotorCollection, AsyncIOMotorDatabase
 
 
 class TestAsyncIODatabase(AsyncIOTestCase):

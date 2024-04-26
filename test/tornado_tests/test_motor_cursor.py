@@ -44,14 +44,14 @@ from tornado import gen
 from tornado.concurrent import Future
 from tornado.testing import gen_test
 
-import motorAnyio
-import motorAnyio.motor_tornado
+import motor
+import motor.motor_tornado
 
 
 class MotorCursorTest(MotorMockServerTest):
     def test_cursor(self):
         cursor = self.collection.find()
-        self.assertTrue(isinstance(cursor, motorAnyio.motor_tornado.MotorCursor))
+        self.assertTrue(isinstance(cursor, motor.motor_tornado.MotorCursor))
         self.assertFalse(cursor.started, "Cursor shouldn't start immediately")
 
     @gen_test
@@ -521,10 +521,10 @@ class MotorCursorTest(MotorMockServerTest):
         c = self.collection
         KMS_PROVIDERS = {"local": {"key": b"\x00" * 96}}
 
-        async with motorAnyio.MotorClientEncryption(
+        async with motor.MotorClientEncryption(
             KMS_PROVIDERS, "keyvault.datakeys", c, bson.codec_options.CodecOptions()
         ) as client_encryption:
-            self.assertIsInstance(await client_encryption.get_keys(), motorAnyio.MotorCursor)
+            self.assertIsInstance(await client_encryption.get_keys(), motor.MotorCursor)
 
 
 class MotorCursorMaxTimeMSTest(MotorTest):

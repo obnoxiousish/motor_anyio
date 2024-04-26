@@ -21,7 +21,7 @@ from gridfs import DEFAULT_CHUNK_SIZE, GridFSBucket, GridIn, GridOut, GridOutCur
 from pymongo import WriteConcern
 from pymongo.read_preferences import _ServerMode
 
-from motorAnyio.core import (
+from motor.core import (
     AgnosticClientSession,
     AgnosticCollection,
     AgnosticCursor,

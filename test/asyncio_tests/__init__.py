@@ -27,8 +27,8 @@ from unittest import SkipTest
 
 from mockupdb import MockupDB
 
-from motorAnyio import motor_asyncio
-from motorAnyio.core import AgnosticClient
+from motor import motor_asyncio
+from motor.core import AgnosticClient
 
 # mypy: ignore-errors
 

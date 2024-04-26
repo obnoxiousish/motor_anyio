@@ -26,7 +26,7 @@ from pymongo.errors import CollectionInvalid, OperationFailure
 from pymongo.read_preferences import Secondary
 from tornado.testing import gen_test
 
-import motorAnyio
+import motor
 
 
 class MotorDatabaseTest(MotorTest):
@@ -34,7 +34,7 @@ class MotorDatabaseTest(MotorTest):
     async def test_database(self):
         # Test that we can create a db directly, not just from MotorClient's
         # accessors
-        db = motorAnyio.MotorDatabase(self.cx, "motor_test")
+        db = motor.MotorDatabase(self.cx, "motor_test")
 
         # Make sure we got the right DB and it can do an operation
         self.assertEqual("motor_test", db.name)
@@ -45,7 +45,7 @@ class MotorDatabaseTest(MotorTest):
     def test_collection_named_delegate(self):
         db = self.db
         self.assertTrue(isinstance(db.delegate, pymongo.database.Database))
-        self.assertTrue(isinstance(db["delegate"], motorAnyio.MotorCollection))
+        self.assertTrue(isinstance(db["delegate"], motor.MotorCollection))
         db.client.close()
 
     def test_call(self):
@@ -85,7 +85,7 @@ class MotorDatabaseTest(MotorTest):
         db = self.db
         await db.drop_collection("test_collection2")
         collection = await db.create_collection("test_collection2")
-        self.assertTrue(isinstance(collection, motorAnyio.MotorCollection))
+        self.assertTrue(isinstance(collection, motor.MotorCollection))
         self.assertTrue("test_collection2" in (await db.list_collection_names()))
 
         with self.assertRaises(CollectionInvalid):
@@ -96,7 +96,7 @@ class MotorDatabaseTest(MotorTest):
         # Test creating capped collection
         collection = await db.create_collection("test_capped", capped=True, size=4096)
 
-        self.assertTrue(isinstance(collection, motorAnyio.MotorCollection))
+        self.assertTrue(isinstance(collection, motor.MotorCollection))
         self.assertEqual({"capped": True, "size": 4096}, (await db.test_capped.options()))
         await db.drop_collection("test_capped")
 
@@ -134,7 +134,7 @@ class MotorDatabaseTest(MotorTest):
         write_concern = WriteConcern(w=2, j=True)
         coll = self.db.get_collection("foo", codec_options, ReadPreference.SECONDARY, write_concern)
 
-        self.assertTrue(isinstance(coll, motorAnyio.MotorCollection))
+        self.assertTrue(isinstance(coll, motor.MotorCollection))
         self.assertEqual("foo", coll.name)
         self.assertEqual(codec_options, coll.codec_options)
         self.assertEqual(ReadPreference.SECONDARY, coll.read_preference)
@@ -153,7 +153,7 @@ class MotorDatabaseTest(MotorTest):
         write_concern = WriteConcern(w=2, j=True)
         db2 = db.with_options(codec_options, ReadPreference.SECONDARY, write_concern)
 
-        self.assertTrue(isinstance(db2, motorAnyio.MotorDatabase))
+        self.assertTrue(isinstance(db2, motor.MotorDatabase))
         self.assertEqual(codec_options, db2.codec_options)
         self.assertEqual(Secondary(), db2.read_preference)
         self.assertEqual(write_concern, db2.write_concern)

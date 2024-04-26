@@ -1,6 +1,6 @@
 import trio
 
-from motorAnyio.motor_trio import AnyIOMotorClient
+from motor.motor_trio import AnyIOMotorClient
 
 
 async def main():

@@ -24,7 +24,7 @@ from bson import SON
 from mockupdb import MockupDB
 from tornado import testing
 
-import motorAnyio
+import motor
 
 
 async def get_command_line(client):
@@ -90,14 +90,14 @@ class MotorTest(testing.AsyncTestCase):
         close the client to avoid file-descriptor problems after AsyncTestCase
         calls self.io_loop.close(all_fds=True).
         """
-        return motorAnyio.MotorClient(uri or env.uri, *args, **self.get_client_kwargs(**kwargs))
+        return motor.MotorClient(uri or env.uri, *args, **self.get_client_kwargs(**kwargs))
 
     def motor_rsc(self, uri=None, *args, **kwargs):
         """Get an open MotorClient for replica set.
 
         Ignores self.ssl, you must pass 'ssl' argument.
         """
-        return motorAnyio.MotorClient(uri or env.rs_uri, *args, **self.get_client_kwargs(**kwargs))
+        return motor.MotorClient(uri or env.rs_uri, *args, **self.get_client_kwargs(**kwargs))
 
     def tearDown(self):
         env.sync_cx.motor_test.test_collection.delete_many({})
@@ -126,7 +126,7 @@ class MotorMockServerTest(MotorTest):
 
     def client_server(self, *args, **kwargs):
         server = self.server(*args, **kwargs)
-        client = motorAnyio.motor_tornado.MotorClient(server.uri, io_loop=self.io_loop)
+        client = motor.motor_tornado.MotorClient(server.uri, io_loop=self.io_loop)
 
         self.addCleanup(client.close)
         return client, server

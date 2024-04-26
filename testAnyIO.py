@@ -1,6 +1,6 @@
 import anyio
 
-from motorAnyio.motor_anyio import AnyIOMotorClient
+from motor.motor_anyio import AnyIOMotorClient
 
 
 async def main():

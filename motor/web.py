@@ -21,8 +21,8 @@ import time
 import gridfs
 import tornado.web
 
-import motorAnyio
-from motorAnyio.motor_gridfs import _hash_gridout
+import motor
+from motor.motor_gridfs import _hash_gridout
 
 # mypy: disable-error-code="no-untyped-def,no-untyped-call"
 
@@ -95,7 +95,7 @@ class GridFSHandler(tornado.web.RequestHandler):
         return bucket.open_download_stream_by_name(filename)
 
     async def get(self, path, include_body=True):
-        fs = motorAnyio.MotorGridFSBucket(self.database, self.root_collection)
+        fs = motor.MotorGridFSBucket(self.database, self.root_collection)
 
         try:
             gridout = await self.get_gridfs_file(fs, path, self.request)
