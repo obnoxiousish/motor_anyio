@@ -27,7 +27,7 @@ from test.tornado_tests import MotorTest
 from pymongo.errors import ConfigurationError, ConnectionFailure
 from tornado.testing import gen_test
 
-import motor
+import motorAnyio
 
 # Start a mongod instance like:
 #
@@ -49,13 +49,13 @@ class MotorSSLTest(MotorTest):
         super().setUp()
 
     def test_config_ssl(self):
-        self.assertRaises(ValueError, motor.MotorClient, tls="foo")
+        self.assertRaises(ValueError, motorAnyio.MotorClient, tls="foo")
         self.assertRaises(
-            ConfigurationError, motor.MotorClient, tls=False, tlsCertificateKeyFile=CLIENT_PEM
+            ConfigurationError, motorAnyio.MotorClient, tls=False, tlsCertificateKeyFile=CLIENT_PEM
         )
 
-        self.assertRaises(IOError, motor.MotorClient, tlsCertificateKeyFile="NoFile")
-        self.assertRaises(TypeError, motor.MotorClient, tlsCertificateKeyFile=True)
+        self.assertRaises(IOError, motorAnyio.MotorClient, tlsCertificateKeyFile="NoFile")
+        self.assertRaises(TypeError, motorAnyio.MotorClient, tlsCertificateKeyFile=True)
 
     @gen_test
     async def test_cert_ssl(self):
@@ -65,7 +65,7 @@ class MotorSSLTest(MotorTest):
         if test.env.auth:
             raise SkipTest("can't test with auth")
 
-        client = motor.MotorClient(
+        client = motorAnyio.MotorClient(
             env.host,
             env.port,
             tlsCertificateKeyFile=CLIENT_PEM,
@@ -87,7 +87,7 @@ class MotorSSLTest(MotorTest):
         if test.env.auth:
             raise SkipTest("can't test with auth")
 
-        client = motor.MotorClient(
+        client = motorAnyio.MotorClient(
             env.host,
             env.port,
             tlsCertificateKeyFile=CLIENT_PEM,
@@ -99,7 +99,7 @@ class MotorSSLTest(MotorTest):
         response = await client.admin.command("ismaster")
 
         if "setName" in response:
-            client = motor.MotorClient(
+            client = motorAnyio.MotorClient(
                 env.host,
                 env.port,
                 replicaSet=response["setName"],
@@ -118,7 +118,7 @@ class MotorSSLTest(MotorTest):
         if test.env.auth:
             raise SkipTest("can't test with auth")
 
-        client = motor.MotorClient(
+        client = motorAnyio.MotorClient(
             test.env.fake_hostname_uri,
             tlsCertificateKeyFile=CLIENT_PEM,
             tlsAllowInvalidCertificates=True,
@@ -136,7 +136,7 @@ class MotorSSLTest(MotorTest):
         if test.env.auth:
             raise SkipTest("can't test with auth")
 
-        client = motor.MotorClient(
+        client = motorAnyio.MotorClient(
             env.host,
             env.port,
             tlsCertificateKeyFile=CLIENT_PEM,
@@ -148,7 +148,7 @@ class MotorSSLTest(MotorTest):
         with self.assertRaises(ConnectionFailure):
             # Create client with hostname 'server', not 'localhost',
             # which is what the server cert presents.
-            client = motor.MotorClient(
+            client = motorAnyio.MotorClient(
                 test.env.fake_hostname_uri,
                 serverSelectionTimeoutMS=100,
                 tlsCertificateKeyFile=CLIENT_PEM,
@@ -160,7 +160,7 @@ class MotorSSLTest(MotorTest):
 
         if "setName" in response:
             with self.assertRaises(ConnectionFailure):
-                client = motor.MotorClient(
+                client = motorAnyio.MotorClient(
                     test.env.fake_hostname_uri,
                     serverSelectionTimeoutMS=100,
                     replicaSet=response["setName"],

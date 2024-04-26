@@ -22,7 +22,7 @@ from gridfs.errors import NoFile
 from pymongo.read_preferences import ReadPreference
 from pymongo.write_concern import WriteConcern
 
-from motor.motor_asyncio import AsyncIOMotorGridFSBucket
+from motorAnyio.motor_asyncio import AsyncIOMotorGridFSBucket
 
 
 class TestAsyncIOGridFSBucket(AsyncIOTestCase):

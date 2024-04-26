@@ -25,7 +25,7 @@ from bson.son import SON
 from pymongo.operations import DeleteOne, InsertOne, ReplaceOne
 from pymongo.read_preferences import ReadPreference
 
-from motor.core import AgnosticClient, AgnosticCollection
+from motorAnyio.core import AgnosticClient, AgnosticCollection
 
 try:
     from bson import ObjectId

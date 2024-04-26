@@ -32,8 +32,8 @@ from pymongo.read_preferences import Secondary
 from tornado import gen
 from tornado.testing import gen_test
 
-import motor
-import motor.motor_tornado
+import motorAnyio
+import motorAnyio.motor_tornado
 
 if pymongo.version_tuple >= (4, 4, 0):
     from pymongo.encryption_options import RangeOpts
@@ -44,7 +44,7 @@ class MotorCollectionTest(MotorTest):
     async def test_collection(self):
         # Test that we can create a collection directly, not just from
         # MotorClient's accessors
-        collection = motor.MotorCollection(self.db, "test_collection")
+        collection = motorAnyio.MotorCollection(self.db, "test_collection")
 
         # Make sure we got the right collection and it can do an operation
         self.assertEqual("test_collection", collection.name)
@@ -55,7 +55,7 @@ class MotorCollectionTest(MotorTest):
         # If you pass kwargs to PyMongo's Collection(), it calls
         # db.create_collection(). Motor can't do I/O in a constructor
         # so this is prohibited.
-        self.assertRaises(TypeError, motor.MotorCollection, self.db, "test_collection", capped=True)
+        self.assertRaises(TypeError, motorAnyio.MotorCollection, self.db, "test_collection", capped=True)
 
     @gen_test
     async def test_dotted_collection_name(self):
@@ -231,7 +231,7 @@ class MotorCollectionTest(MotorTest):
         write_concern = WriteConcern(w=2, j=True)
         coll2 = coll.with_options(codec_options, ReadPreference.SECONDARY, write_concern)
 
-        self.assertTrue(isinstance(coll2, motor.MotorCollection))
+        self.assertTrue(isinstance(coll2, motorAnyio.MotorCollection))
         self.assertEqual(codec_options, coll2.codec_options)
         self.assertEqual(Secondary(), coll2.read_preference)
         self.assertEqual(write_concern, coll2.write_concern)
@@ -275,7 +275,7 @@ class MotorCollectionTest(MotorTest):
         c = self.collection
         KMS_PROVIDERS = {"local": {"key": b"\x00" * 96}}
         self.cx.drop_database("db")
-        async with motor.MotorClientEncryption(
+        async with motorAnyio.MotorClientEncryption(
             KMS_PROVIDERS, "keyvault.datakeys", c, CodecOptions()
         ) as client_encryption:
             coll, ef = await client_encryption.create_encrypted_collection(
@@ -294,7 +294,7 @@ class MotorCollectionTest(MotorTest):
         c = self.collection
         KMS_PROVIDERS = {"local": {"key": b"\x00" * 96}}
         self.cx.drop_database("db")
-        async with motor.MotorClientEncryption(
+        async with motorAnyio.MotorClientEncryption(
             KMS_PROVIDERS, "keyvault.datakeys", c, CodecOptions()
         ) as client_encryption:
             data_key = await client_encryption.create_data_key(

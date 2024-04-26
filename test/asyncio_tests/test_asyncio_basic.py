@@ -24,7 +24,7 @@ import pymongo
 from pymongo import WriteConcern
 from pymongo.read_preferences import Nearest, ReadPreference, Secondary
 
-from motor import motor_asyncio
+from motorAnyio import motor_asyncio
 
 
 class AIOMotorTestBasic(AsyncIOTestCase):

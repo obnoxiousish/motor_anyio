@@ -2,7 +2,7 @@
 # -- setup-start --
 from aiohttp import web
 
-from motor.motor_asyncio import AsyncIOMotorClient
+from motorAnyio.motor_asyncio import AsyncIOMotorClient
 
 
 async def setup_db():

@@ -26,8 +26,8 @@ import aiohttp
 import aiohttp.web
 import gridfs
 
-from motor.aiohttp import AIOHTTPGridFS
-from motor.motor_gridfs import _hash_gridout
+from motorAnyio.aiohttp import AIOHTTPGridFS
+from motorAnyio.motor_gridfs import _hash_gridout
 
 
 def format_date(d):

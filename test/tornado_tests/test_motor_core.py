@@ -20,7 +20,7 @@ from test.tornado_tests import MotorTest
 from gridfs import GridFSBucket, GridIn
 from tornado.testing import gen_test
 
-from motor import MotorGridFSBucket, MotorGridIn
+from motorAnyio import MotorGridFSBucket, MotorGridIn
 
 
 def attrs(klass):

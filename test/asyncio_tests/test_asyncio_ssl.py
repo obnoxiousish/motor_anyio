@@ -24,7 +24,7 @@ from unittest import SkipTest
 
 from pymongo.errors import ConfigurationError, ConnectionFailure
 
-from motor.motor_asyncio import AsyncIOMotorClient
+from motorAnyio.motor_asyncio import AsyncIOMotorClient
 
 # Start a mongod instance like:
 #

@@ -26,9 +26,9 @@ import gridfs
 from tornado.testing import AsyncHTTPTestCase
 from tornado.web import Application
 
-import motor
-import motor.web
-from motor.motor_gridfs import _hash_gridout
+import motorAnyio
+import motorAnyio.web
+from motorAnyio.motor_gridfs import _hash_gridout
 
 
 # We're using Tornado's AsyncHTTPTestCase instead of our own MotorTestCase for
@@ -65,7 +65,7 @@ class GridFSHandlerTestBase(AsyncHTTPTestCase):
 
         kwargs.setdefault("tls", env.mongod_started_with_ssl)
 
-        client = motor.MotorClient(test.env.uri, io_loop=self.io_loop, **kwargs)
+        client = motorAnyio.MotorClient(test.env.uri, io_loop=self.io_loop, **kwargs)
 
         return client.motor_test
 
@@ -74,7 +74,7 @@ class GridFSHandlerTestBase(AsyncHTTPTestCase):
         super().tearDown()
 
     def get_app(self):
-        return Application([("/(.+)", motor.web.GridFSHandler, {"database": self.motor_db()})])
+        return Application([("/(.+)", motorAnyio.web.GridFSHandler, {"database": self.motor_db()})])
 
     def stop(self, *args, **kwargs):
         # A stop() method more permissive about the number of its positional
@@ -191,7 +191,7 @@ class TZAwareGridFSHandlerTest(GridFSHandlerTestBase):
 
 class CustomGridFSHandlerTest(GridFSHandlerTestBase):
     def get_app(self):
-        class CustomGridFSHandler(motor.web.GridFSHandler):
+        class CustomGridFSHandler(motorAnyio.web.GridFSHandler):
             def get_gridfs_file(self, bucket, filename, request):
                 # Test overriding the get_gridfs_file() method, path is
                 # interpreted as file_id instead of filename.

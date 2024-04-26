@@ -21,9 +21,9 @@ import pymongo
 import pymongo.errors
 from gridfs import DEFAULT_CHUNK_SIZE, grid_file
 
-from motor import docstrings
-from motor.core import AgnosticCollection, AgnosticCursor, AgnosticDatabase
-from motor.metaprogramming import (
+from motorAnyio import docstrings
+from motorAnyio.core import AgnosticCollection, AgnosticCursor, AgnosticDatabase
+from motorAnyio.metaprogramming import (
     AsyncCommand,
     AsyncRead,
     DelegateMethod,

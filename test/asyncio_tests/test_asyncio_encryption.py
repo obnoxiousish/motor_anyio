@@ -25,7 +25,7 @@ from bson.errors import BSONError
 from pymongo.encryption import Algorithm
 from pymongo.errors import InvalidOperation
 
-from motor.motor_asyncio import AsyncIOMotorClientEncryption
+from motorAnyio.motor_asyncio import AsyncIOMotorClientEncryption
 
 KMS_PROVIDERS = {"local": {"key": b"\x00" * 96}}
 

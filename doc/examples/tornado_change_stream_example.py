@@ -12,7 +12,7 @@ import tornado.websocket
 from bson import json_util  # Installed with PyMongo.
 from tornado.options import define, options
 
-from motor.motor_tornado import MotorClient
+from motorAnyio.motor_tornado import MotorClient
 
 define("port", default=8888, help="run on the given port", type=int)
 define("debug", default=False, help="reload on source changes")

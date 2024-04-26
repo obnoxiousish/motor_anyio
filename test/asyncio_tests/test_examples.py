@@ -36,7 +36,7 @@ from pymongo.read_concern import ReadConcern
 from pymongo.read_preferences import ReadPreference
 from pymongo.server_api import ServerApi
 
-from motor.motor_asyncio import AsyncIOMotorClientEncryption
+from motorAnyio.motor_asyncio import AsyncIOMotorClientEncryption
 
 
 async def count(cursor):
@@ -1541,7 +1541,7 @@ class MotorAWSLambdaExamples(AsyncIOTestCase):
         import asyncio
         import os
 
-        from motor.motor_asyncio import AsyncIOMotorClient
+        from motorAnyio.motor_asyncio import AsyncIOMotorClient
 
         event_loop = asyncio.new_event_loop()
         asyncio.set_event_loop(event_loop)

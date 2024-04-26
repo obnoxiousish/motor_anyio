@@ -25,7 +25,7 @@ from bson.objectid import ObjectId
 from gridfs.errors import NoFile
 from pymongo.errors import InvalidOperation
 
-from motor import motor_asyncio
+from motorAnyio import motor_asyncio
 
 
 class MotorGridFileTest(AsyncIOTestCase):

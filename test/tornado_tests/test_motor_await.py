@@ -24,7 +24,7 @@ from test.tornado_tests import MotorTest
 
 from tornado.testing import gen_test
 
-from motor.motor_tornado import MotorClientSession, MotorGridFSBucket
+from motorAnyio.motor_tornado import MotorClientSession, MotorGridFSBucket
 
 
 class MotorTestAwait(MotorTest):

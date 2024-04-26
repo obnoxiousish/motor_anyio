@@ -19,7 +19,7 @@ from test.asyncio_tests import AsyncIOTestCase, asyncio_test
 
 import bson
 
-from motor.motor_asyncio import AsyncIOMotorClientSession, AsyncIOMotorGridFSBucket
+from motorAnyio.motor_asyncio import AsyncIOMotorClientSession, AsyncIOMotorGridFSBucket
 
 
 class TestAsyncIOAwait(AsyncIOTestCase):

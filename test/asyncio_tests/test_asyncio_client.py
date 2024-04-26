@@ -40,8 +40,8 @@ from bson import CodecOptions
 from pymongo import ReadPreference, WriteConcern, monitoring
 from pymongo.errors import ConnectionFailure, OperationFailure
 
-import motor
-from motor import motor_asyncio
+import motorAnyio
+from motorAnyio import motor_asyncio
 
 
 class TestAsyncIOClient(AsyncIOTestCase):
@@ -285,9 +285,9 @@ class TestAsyncIOClientHandshake(AsyncIOMockServerTestCase):
         # AsyncIOMotorClient adds nothing to platform.
         self.assertNotIn("Tornado", meta["platform"])
         self.assertTrue(
-            meta["driver"]["version"].endswith(motor.version),
+            meta["driver"]["version"].endswith(motorAnyio.version),
             "Version in handshake [%s] doesn't end with Motor version [%s]"
-            % (meta["driver"]["version"], motor.version),
+            % (meta["driver"]["version"], motorAnyio.version),
         )
 
         ismaster.hangs_up()

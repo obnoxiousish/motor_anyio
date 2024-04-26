@@ -43,7 +43,7 @@ import bson
 from pymongo import CursorType
 from pymongo.errors import ExecutionTimeout, InvalidOperation, OperationFailure
 
-from motor import motor_asyncio
+from motorAnyio import motor_asyncio
 
 
 class TestAsyncIOCursor(AsyncIOMockServerTestCase):

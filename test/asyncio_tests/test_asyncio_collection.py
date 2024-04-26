@@ -31,7 +31,7 @@ from pymongo.errors import BulkWriteError, DuplicateKeyError, OperationFailure
 from pymongo.read_concern import ReadConcern
 from pymongo.read_preferences import Secondary
 
-from motor.motor_asyncio import AsyncIOMotorClientEncryption, AsyncIOMotorCollection
+from motorAnyio.motor_asyncio import AsyncIOMotorClientEncryption, AsyncIOMotorCollection
 
 if pymongo.version_tuple >= (4, 4, 0):
     from pymongo.encryption_options import RangeOpts

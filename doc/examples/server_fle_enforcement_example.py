@@ -8,7 +8,7 @@ from pymongo.encryption_options import AutoEncryptionOpts
 from pymongo.errors import OperationFailure
 from pymongo.write_concern import WriteConcern
 
-from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorClientEncryption
+from motorAnyio.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorClientEncryption
 
 
 async def main():

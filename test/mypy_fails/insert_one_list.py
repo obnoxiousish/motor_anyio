@@ -1,6 +1,6 @@
 import asyncio
 
-from motor.core import AgnosticClient
+from motorAnyio.core import AgnosticClient
 
 
 async def _main():

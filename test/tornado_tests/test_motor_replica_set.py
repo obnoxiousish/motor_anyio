@@ -26,19 +26,19 @@ import pymongo.errors
 from tornado import gen
 from tornado.testing import gen_test
 
-import motor
-import motor.core
+import motorAnyio
+import motorAnyio.core
 
 
 class MotorReplicaSetTest(MotorReplicaSetTestBase):
     def test_io_loop(self):
         with self.assertRaises(TypeError):
-            motor.MotorClient(test.env.rs_uri, io_loop="foo")
+            motorAnyio.MotorClient(test.env.rs_uri, io_loop="foo")
 
     @gen_test
     async def test_connection_failure(self):
         # Assuming there isn't anything actually running on this port
-        client = motor.MotorClient(
+        client = motorAnyio.MotorClient(
             "localhost:8765", replicaSet="rs", io_loop=self.io_loop, serverSelectionTimeoutMS=10
         )
 
@@ -67,7 +67,7 @@ class TestReplicaSetClientAgainstStandalone(MotorTest):
     @gen_test
     async def test_connect(self):
         with self.assertRaises(pymongo.errors.ServerSelectionTimeoutError):
-            await motor.MotorClient(
+            await motorAnyio.MotorClient(
                 "%s:%s" % (env.host, env.port),
                 replicaSet="anything",
                 io_loop=self.io_loop,

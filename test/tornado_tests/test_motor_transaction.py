@@ -26,7 +26,7 @@ from pymongo import ReadPreference, WriteConcern
 from pymongo.errors import ConnectionFailure, OperationFailure
 from tornado.testing import gen_test
 
-from motor import core
+from motorAnyio import core
 
 
 class PatchSessionTimeout:

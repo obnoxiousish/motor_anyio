@@ -24,7 +24,7 @@ from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
 from tornado.testing import gen_test
 
-import motor
+import motorAnyio
 
 
 class MotorIPv6Test(MotorTest):
@@ -51,7 +51,7 @@ class MotorIPv6Test(MotorTest):
         else:
             cx_string = "mongodb://[::1]:%d" % env.port
 
-        cx = motor.MotorClient(cx_string, io_loop=self.io_loop)
+        cx = motorAnyio.MotorClient(cx_string, io_loop=self.io_loop)
         collection = cx.motor_test.test_collection
         await collection.insert_one({"dummy": "object"})
         self.assertTrue(await collection.find_one({"dummy": "object"}))
